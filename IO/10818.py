@@ -21,3 +21,5 @@ print(min_num, max_num)
 case = int(input())
 num_list = list(map(int, input().split()))
 print(f'{min(num_list)} {max(num_list)}')
+
+#https://www.acmicpc.net/problem/status/10818/28/1을 참고해서 가변 인자로 받는 것을 해보자!
