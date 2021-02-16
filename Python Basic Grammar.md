@@ -546,3 +546,24 @@ print(list(map(plus_one, a)))  # [2, 3, 4]
 print(list(map(lambda x: x + 1, a)))  # [2, 3, 4]
 ```
 
+
+
+## 최솟값 구하기
+
+```python
+arr = [5, 3, 7, 9, 2, 5, 2, 6]
+arr_min = float('inf')  # python에서 가장 큰 값 (무한) / arr[0]로 초기화해도 됨
+# 첫번째 방법
+for i in range(len(arr)):
+    print(arr[i])  # 한 줄에 원소 하나씩 출력
+    if arr[i] < arr_min:  # 무한대로 초기화되어 있으므로 무조건 처음에는 True
+        arr_min = arr[i]
+print(arr_min)  # 2
+
+# 두번째 방법
+for x in arr:
+    if x < arr_min:
+        arr_min = x
+print(arr_min)  # 2
+```
+
