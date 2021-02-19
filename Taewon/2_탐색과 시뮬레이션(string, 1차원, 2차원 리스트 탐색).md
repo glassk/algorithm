@@ -222,6 +222,7 @@ print(count)
 - 이중 for문을 쓰지 않고 작성했는데 고려하지 않은 부분도 있어서 모든 경우를 출력하진 못했다
 
 ```python
+#ref
 import sys
 sys.stdin = open("input.txt", 'r')
 n, m = map(int, input().split())
@@ -257,4 +258,202 @@ print(cnt)
     - `m`이 큰 경우: `a[rt]`을 더하고 `rt`는 1 증가. `rt`가 `n`이 되면 반복문 종료
     - 같은 경우: `a[lt]`을 빼고 `lt`는 1 증가. `cnt`(답) 증가
     - `tot`이 큰 경우: a[lt]를 빼고 lt는 1 증가
+
+
+
+## 격자판 최대합
+
+```python
+import sys
+
+n = int(sys.stdin.readline())
+board = [0 for _ in range(n)]
+for i in range(n):
+    board[i] = list(map(int, sys.stdin.readline().split()))
+answer = 0
+
+for i in range(n):
+    answer = max(answer, sum(board[i]))
+
+for i in range(n):
+    total = 0
+    for j in range(n):
+        total += board[j][i]
+    answer = max(answer, total)
+
+total = 0
+for i in range(n):
+    total += board[i][i]
+answer = max(answer, total)
+
+total = 0
+for i in range(n):
+    total += board[i][n-1-i]
+answer = max(answer, total)
+
+print(answer)
+```
+
+- 처음에는 가로줄 중의 최대, 세로줄 중의 최대를 구한 후 두 최댓값과 대각선 합을 리스트에 넣은 다음 리스트 아이템의 최댓값을 구했었는데 문제를 다시 읽어보니 그럴 필요가 없었다
+
+  => 문제 읽고 나서 성급하게 코드 적지 말기! 충분히 이해하고 나서 하기
+
+```python
+#ref
+import sys
+sys.stdin = open("input.txt", 'r')
+n = int(input())
+a = [list(map(int, input().split())) for _ in range(n)]
+largest = -2147000000
+for i in range(n):
+    sum1 = sum2 = 0
+    for j in range(n):
+        sum1 += a[i][j]
+        sum2 += a[j][i]
+    if sum1 > largest:
+        largest = sum1
+    if sum2 > largest:
+        largest = sum2
+sum1 = sum2 = 0
+for i in range(n):
+    sum1 += a[i][i]
+    sum2 += a[i][n-i-1]
+if sum1 > largest:
+    largest = sum1
+if sum2 > largest:
+    largest = sum2
+print(largest)
+```
+
+- `[list(map(int, input().split())) for _ in range(n)]` : 한 줄에 2차원 리스트 선언 및 할당(입력)을 동시에 할 수 있다! 
+
+- 최댓값은 int가 취할 수 있는 값 중 최솟값으로 초기화
+- 각 행의 합과 열의 합을 각각 sum1과 sum2에 for문 한 개로 동시에 계산할 수 있다
+
+- 위 코드에서는 행의 최대 합과 열의 최대 합을 구한 후 largest에 업데이트하고, 두 대각선의 최대 합을 구한 후 largest에 업데이트하는 순으로 진행했다
+
+
+
+## 사과나무(다이아몬드)
+
+```python
+import sys
+n = int(sys.stdin.readline())
+apple = [list(map(int, sys.stdin.readline().split())) for _ in range(n)]
+answer = 0
+
+for i in range(n):
+    if i < n//2:
+        answer += sum(apple[i][n//2-i:n//2+i+1])
+    elif i == n//2:
+        answer += sum(apple[i])
+    elif n//2 < i < n-1:
+        answer += sum(apple[i][i-n//2:i+1])
+    else:
+        answer += apple[n-1][n//2]
+print(answer)
+```
+
+- 일부 테스트 케이스 입력 시 오답
+- 리스트의 합 구할 때 sum 내장함수와 슬라이스 사용
+
+```python
+#ref
+import sys
+sys.stdin = open("input.txt", 'r')
+n = int(input())
+a = [list(map(int, input().split())) for _ in range(n)]
+res = 0
+s = e = n//2
+for i in range(n):
+    for j in range(s, e+1):
+        res += a[i][j]
+    if i < n//2:
+        s -= 1
+        e += 1
+    else:
+        s += 1
+        e -= 1
+print(res)
+```
+
+- 다음부턴 접근할 때 인덱스 변수 사용을 적극 고려하자
+- `s`는 각 행에서 왼쪽 인덱스(시작점), `e`는 각 행에서 오른쪽 인덱스(끝)
+  - 왼쪽 인덱스부터 오른쪽 인덱스까지의 합을 `res`에 더한다
+- 0행부터 n//2행 전까지: `s`는 1씩 감소하고 `e`는 1씩 증가한다
+- n//2행부터 마지막 행까지: `s`는 1씩 증가하고 `e`는 1씩 감소한다
+
+
+
+## 곶감(모래시계)
+
+```python
+import sys
+n = int(sys.stdin.readline())
+gotgam = [list(map(int, sys.stdin.readline().split())) for _ in range(n)]
+m = int(sys.stdin.readline())
+rotation = [list(map(int, sys.stdin.readline().split())) for _ in range(m)]
+
+for i in range(m):
+    temp = []
+    row = rotation[i][0] - 1
+    direction = rotation[i][1]
+    num = rotation[i][2]
+    if direction == 0:
+        for j in range(num % n, n):
+            temp.append(gotgam[row][j])
+        for j in range(0, num % n):
+            temp.append(gotgam[row][j])
+    else:
+        for j in range((n-num) % n, n):
+            temp.append(gotgam[row][j])
+        for j in range(0, (n-num) % n):
+            temp.append(gotgam[row][j])
+    gotgam[row] = temp
+
+start = 0
+end = n
+answer = 0
+
+for i in range(n):
+    for j in range(start, end):
+        answer += gotgam[i][j]
+    if i < n//2:
+        start += 1
+        end -= 1
+    else:
+        start -= 1
+        end += 1
+print(answer)
+```
+
+```python
+import sys
+sys.stdin = open("input.txt", 'r')
+n = int(input())
+a = [list(map(int, input().split())) for _ in range(n)]
+m = int(input())
+for i in range(m):
+    h, t, k = map(int, input().split())
+    if(t == 0):
+        for _ in range(k):
+            a[h-1].append(a[h-1].pop(0))
+    else:
+        for _ in range(k):
+            a[h-1].insert(0, a[h-1].pop())
+
+res = 0
+s = 0
+e = n-1
+for i in range(n):
+    for j in range(s, e+1):
+        res += a[i][j]
+    if i < n//2:
+        s += 1
+        e -= 1
+    else:
+        s -= 1
+        e += 1
+print(res)
+```
 
