@@ -427,6 +427,9 @@ for i in range(n):
 print(answer)
 ```
 
+- rotation을 굳이 리스트로 입력 받아서 저장할 필요 없다 (반복할 때마다 초기화되므로)
+- gotgam 리스트를 업데이트할 때 굳이 temp에 새로 저장할 필요 없이 아래처럼 append(insert)와 pop을 이용하면 된다
+
 ```python
 import sys
 sys.stdin = open("input.txt", 'r')
@@ -457,3 +460,211 @@ for i in range(n):
 print(res)
 ```
 
+- `a[h-1].append(a[h-1].pop(0))`: 맨 앞의 값을 맨 뒤에 붙인다
+
+- `a[h-1].insert(0, a[h-1].pop())`: 맨 뒤의 값을 맨 앞에 붙인다
+
+
+
+## 봉우리
+
+```python
+import sys
+n = int(sys.stdin.readline())
+height = [list(map(int, sys.stdin.readline().split())) for _ in range(n)]
+board = [[0]*(n+2) for _ in range(n+2)]
+count = 0
+
+for i in range(n):
+    for j in range(n):
+        board[i+1][j+1] = height[i][j]
+
+for i in range(1, n+1):
+    for j in range(1, n+1):
+        if max(board[i][j], board[i][j-1], board[i][j+1], board[i-1][j], board[i+1][j]) == board[i][j] and max(board[i][j-1], board[i][j+1], board[i-1][j], board[i+1][j]) != board[i][j]:
+            count += 1
+
+print(count)
+```
+
+- 상하좌우와 가운데 값 중 최대 값이 가운데 값이면서 상하좌우 값 중 같은 게 없어야 한다
+
+```python
+import sys
+#sys.stdin = open("input.txt", 'r')
+dx = [-1, 0, 1, 0]
+dy = [0, 1, 0, -1]
+n = int(input())
+a = [list(map(int, input().split())) for _ in range(n)]
+a.insert(0, [0]*n)
+a.append([0]*n)
+for x in a:
+    x.insert(0, 0)
+    x.append(0)
+
+cnt = 0
+for i in range(1, n+1):
+    for j in range(1, n+1):
+        if all(a[i][j] > a[i+dx[k]][j+dy[k]] for k in range(4)):
+            cnt += 1
+print(cnt)
+```
+
+- 가장자리를 0으로 채우는 방법
+
+  ```python
+  a.insert(0, [0]*n)
+  a.append([0]*n)
+  for x in a:
+      x.insert(0, 0)
+      x.append(0)
+  ```
+
+- `all(a[i][j] > a[i+dx[k]][j+dy[k]] for k in range(4))`: 훨씬 깔끔하다!
+
+  - `all()`: 괄호 안의 조건이 모두 참인 경우만 true 리턴
+  - dx와 dy 리스트에 경우에 따른 x와 y 좌표를 미리 넣어놓고 차례로 적용(상, 우, 하, 좌)
+
+
+
+## 스도쿠 검사
+
+```python
+import sys
+board = [list(map(int, sys.stdin.readline().split())) for _ in range(9)]
+dx = [0, 1, 2, 0, 1, 2, 0, 1, 2]
+dy = [0, 0, 0, 1, 1, 1, 2, 2, 2]
+
+
+def check(board):
+    for i in range(9):
+        if (len(set(board[i])) != len(board[i])):
+            return "NO"
+        temp = []
+        for j in range(9):
+            temp.append(board[j][i])
+        if (len(set(temp)) != len(temp)):
+            return "NO"
+    for i in range(0, 7, 3):
+        for j in range(0, 7, 3):
+            temp = []
+            for k in range(9):
+                temp.append(board[i + dx[k]][j + dy[k]])
+            if (len(set(temp)) != len(temp)):
+                return "NO"
+    return "YES"
+
+
+print(check(board))
+```
+
+- 중복 확인: 리스트를 set로 변환한 후 길이를 구한 것과 원래 리스트의 길이를 구한 걸 비교하기
+- 이전 문제에서 상대 좌표를 리스트에 넣고 적용한 방법 활용해 봄
+
+```python
+import sys
+sys.stdin = open("input.txt", "r")
+
+
+def check(a):
+    for i in range(9):
+        ch1 = [0]*10
+        ch2 = [0]*10
+        for j in range(9):
+            ch1[a[i][j]] = 1
+            ch2[a[j][i]] = 1
+        if sum(ch1) != 9 or sum(ch2) != 9:
+            return False
+    for i in range(3):
+        for j in range(3):
+            ch3 = [0]*10
+            for k in range(3):
+                for s in range(3):
+                    ch3[a[i*3+k][j*3+s]] = 1
+            if sum(ch3) != 9:
+                return False
+    return True
+
+
+a = [list(map(int, input().split())) for _ in range(9)]
+if check(a):
+    print("YES")
+else:
+    print("NO")
+```
+
+- 크기가 10인 리스트를 초기화하고 한 칸씩 값에 해당하는 인덱스의 값을 1씩 증가시킨다. 할당 완료 후 리스트 내 모든 원소의 합을 구했을 때 9가 아니면 False
+- 그룹 탐색 시 각 그룹 내에서 행마다 리스트 새로 할당해서 합 구해서 확인
+  - `ch3[a[i*3+k][j*3+s]] = 1`: 이 코드만으로 그룹 이동 + 그룹 내 리스트 값 할당 가능!
+
+
+
+## 격자판 회문수
+
+```python
+import sys
+board = [list(map(int, sys.stdin.readline().split())) for _ in range(7)]
+count = 0
+
+for i in range(7):
+    for j in range(3):
+        temp = board[i][j:j+5]
+        if temp == temp[::-1]:
+            count += 1
+    col = []
+    for j in range(7):
+        col.append(board[j][i])
+    for j in range(3):
+        temp = col[j:j+5]
+        if temp == temp[::-1]:
+            count += 1
+print(count)
+```
+
+- 빈 리스트 선언할 때 인덴트를 잘못 지정해서 필요 이상의 시간이 걸리게 된다..! 주의하기
+- 리스트[::-1]로 리스트 뒤집어서 회문 검사하는 것 적용해봤다
+- 열이 같아도 행이 다르면 슬라이스는 할 수 없다! (뜨끔)
+
+```python
+import sys
+sys.stdin = open("input.txt", "r")
+board = [list(map(int, input().split())) for _ in range(7)]
+cnt = 0
+for i in range(3):
+    for j in range(7):
+        tmp = board[j][i:i+5]
+        if tmp == tmp[::-1]:
+            cnt += 1
+        for k in range(2):
+            if board[i+k][j] != board[i+5-k-1][j]:
+                break
+        else:
+            cnt += 1
+
+print(cnt)
+
+
+# <회문의 길이가 가변적일 때 코드 >
+sys.stdin = open("input.txt", "r")
+board = [list(map(int, input().split())) for _ in range(7)]
+cnt = 0
+len = 5
+for i in range(3):
+    for j in range(7):
+        tmp = board[j][i:i+len]
+        if tmp == tmp[::-1]:
+            cnt += 1
+        # tmp=board[i:i+5][j] 앞 행은 리스트가 아니라서 슬라이스가 안된다.
+        for k in range(len//2):
+            if board[i+k][j] != board[len-k+i-1][j]:
+                break
+        else:
+            cnt += 1
+
+print(cnt)
+```
+
+- 가장 바깥의 for문이 3번만 돌게 할 수 있다
+- `board[i+k][j] != board[i+5-k-1][j]`: 열에 대해 비교할 때 맨 위와 맨 아래부터 각각 같은지 확인한다. 5자이므로 두 번만 확인하면 됨! (즉, 1~5열이 있다고 했을 때 1, 5열, 2, 4열 두 번만 비교하면 된다)
+- 회문의 길이가 가변적일 경우 5 대신 회문의 길이(`len`)을 적용하면 된다
+  - 열 비교 시 `len//2`번만 하면 된다
