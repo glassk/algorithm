@@ -431,6 +431,7 @@ print(answer)
 - gotgam 리스트를 업데이트할 때 굳이 temp에 새로 저장할 필요 없이 아래처럼 append(insert)와 pop을 이용하면 된다
 
 ```python
+#ref
 import sys
 sys.stdin = open("input.txt", 'r')
 n = int(input())
@@ -490,6 +491,7 @@ print(count)
 - 상하좌우와 가운데 값 중 최대 값이 가운데 값이면서 상하좌우 값 중 같은 게 없어야 한다
 
 ```python
+#ref
 import sys
 #sys.stdin = open("input.txt", 'r')
 dx = [-1, 0, 1, 0]
@@ -562,6 +564,7 @@ print(check(board))
 - 이전 문제에서 상대 좌표를 리스트에 넣고 적용한 방법 활용해 봄
 
 ```python
+#ref
 import sys
 sys.stdin = open("input.txt", "r")
 
@@ -626,6 +629,7 @@ print(count)
 - 열이 같아도 행이 다르면 슬라이스는 할 수 없다! (뜨끔)
 
 ```python
+#ref
 import sys
 sys.stdin = open("input.txt", "r")
 board = [list(map(int, input().split())) for _ in range(7)]
