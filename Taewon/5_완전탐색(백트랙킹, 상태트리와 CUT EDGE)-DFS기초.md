@@ -133,3 +133,54 @@ if __name__ == "__main__":
 
   
 
+## 합이 같은 부분집합(DFS)
+
+```python
+#ref
+import sys
+sys.stdin = open("input.txt", "r")
+
+
+def DFS(L, sum):
+    if sum > total//2:
+        return
+    if L == n:
+        if sum == (total-sum):
+            print("YES")
+            sys.exit(0)
+    else:
+        DFS(L+1, sum+a[L])
+        DFS(L+1, sum)
+
+
+if __name__ == "__main__":
+    n = int(input())
+    a = list(map(int, input().split()))
+    total = sum(a)
+    DFS(0, 0)
+    print("NO")  #참이 되는 경우가 없을 때
+```
+
+문제를 푸는 원리 자체는 생각해 냈지만 코드로 구현하기 쉽지 않았다
+
+- `if sum == (total-sum)`: 한 부분집합의 합과 나머지 부분집합의 합 간 비교
+
+- DFS의 인자 두 가지
+
+  - `L`: 리스트 a의 인덱스 참조 (Level을 의미함)
+    - L이 n이 되었을 때는 곧 한 부분집합 구성을 끝낸 것이다
+    - n이 되기 전까지 1씩 증가시킨다 (= 인덱스와 레벨 1씩 증가)
+  - `sum`: 누적 합
+    - `sum+a[L]`: 해당 부분집합에 포함시킴
+    - `sum`: 해당 부분집합에 포함시키지 않음
+
+  <img src="/Users/yuri/Library/Application Support/typora-user-images/image-20210309151122419.png" alt="image-20210309151122419" style="zoom:50%;" />
+
+- `sys.exit(0)`: 함수뿐만 아니라 **프로그램 전체를 아예 종료시킨다!**
+
+- 시간복잡도를 줄이는 방법
+
+  - 두 개의 부분집합으로 나눴을 때 두 부분집합의 원소의 합이 같다
+
+    = 한 부분집합의 `sum`이 `total`의 1/2을 초과해 버리면 더 이상 DFS를 진행할 필요가 없다!
+
