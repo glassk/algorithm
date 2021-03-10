@@ -184,3 +184,93 @@ if __name__ == "__main__":
 
     = 한 부분집합의 `sum`이 `total`의 1/2을 초과해 버리면 더 이상 DFS를 진행할 필요가 없다!
 
+
+
+## 바둑이 승차(DFS)
+
+```python
+#ref
+import sys
+sys.stdin = open("input.txt", "r")
+
+
+def DFS(L, sum, tsum):
+    global result
+    if sum+(total-tsum) < result:
+        return
+    if sum > c:
+        return
+    if L == n:
+        if sum > result:
+            result = sum
+    else:
+        DFS(L+1, sum+a[L], tsum+a[L])
+        DFS(L+1, sum, tsum+a[L])
+
+
+if __name__ == "__main__":
+    c, n = map(int, input().split())
+    a = [0]*n
+    result = -2147000000
+    for i in range(n):
+        a[i] = int(input())
+    total = sum(a)
+    DFS(0, 0, 0)
+    print(result)
+```
+
+- 부분집합을 활용하면 된다 (직전 문제와 유사)
+- 각 바둑이의 몸무게를 리스트 a에 저장한다
+
+- 최댓값을 찾아야 하 므로 최종 답이 되는 `result`는 정수의 범위 중 최솟값으로 초기화한다
+  - 최댓값을 찾는 과정에서 재할당하므로(`result = sum`) 전역 변수로 선언해야 한다(`global result`)
+- `L`은 a에 접근하는 인덱스 번호, `sum`은 부분집합의 합
+  - `L == n` 이면 말단 지점까지 도달한 것
+- `DFS(L+1, sum+a[L])`: 부분집합에 인덱스가 L인 원소 포함시킴
+
+**Cut Edge Tech**
+
+- `tsum` 없이도 테스트케이스를 모두 통과하지만, 시간 초과
+- `tsum`(total sum): 포함 여부와 상관없이 판단을 거친 바둑이의 몸무게 합
+  - `total - tsum`: 앞으로 판단해야 할 바둑이의 몸무게 합
+  - `if sum+(total-tsum) < result`: 지금까지의 합과 포함 가능성 있는 모든 합이 result(지금까지의 최댓값)보다 작을 경우 바로 실행 종료
+
+
+
+## 중복순열 구하기(DFS)
+
+```python
+#ref
+import sys
+sys.stdin = open("input.txt", "r")
+
+
+def DFS(L):
+    global cnt
+    if L == m:
+        for i in range(m):
+            print(res[i], end=' ')
+        print()
+        cnt += 1
+    else:
+        for i in range(1, n+1):
+            res[L] = i
+            DFS(L+1)
+
+
+if __name__ == "__main__":
+    n, m = map(int, input().split())
+    res = [0]*n
+    cnt = 0
+    DFS(0)
+    print(cnt)
+```
+
+상태트리를 잘 구성하여 DFS()를 호출하면 된다
+
+<img src="/Users/yuri/Library/Application Support/typora-user-images/image-20210310112228100.png" alt="image-20210310112228100" style="zoom:50%;" />
+
+- 크기가 m인 리스트를 생성하여 각 아이템의 숫자를 상태 트리를 통해 결정한다
+- DFS(L+1)을 n번 실행하면서 res[L]을a 1~n까지의 값으로 초기화한다 (이해 필요)
+
+- `cnt += 1` 를 쓰기 위해서는 `cnt`를 전역변수로 선언해야 한다
