@@ -196,8 +196,10 @@ sys.stdin = open("input.txt", "r")
 
 def DFS(L, sum, tsum):
     global result
+    #cut edge tech
     if sum+(total-tsum) < result:
         return
+      
     if sum > c:
         return
     if L == n:
@@ -222,7 +224,7 @@ if __name__ == "__main__":
 - 부분집합을 활용하면 된다 (직전 문제와 유사)
 - 각 바둑이의 몸무게를 리스트 a에 저장한다
 
-- 최댓값을 찾아야 하 므로 최종 답이 되는 `result`는 정수의 범위 중 최솟값으로 초기화한다
+- 최댓값을 찾아야 하므로 최종 답이 되는 `result`는 정수의 범위 중 최솟값으로 초기화한다
   - 최댓값을 찾는 과정에서 재할당하므로(`result = sum`) 전역 변수로 선언해야 한다(`global result`)
 - `L`은 a에 접근하는 인덱스 번호, `sum`은 부분집합의 합
   - `L == n` 이면 말단 지점까지 도달한 것
@@ -309,6 +311,20 @@ if __name__ == "__main__":
     print(res)
 ```
 
+- 직전 문제와 유사
+  - 여기서 `L`(level)은 사용한 동전 종류의 수
+  - 모든 노드에 대하여 동전의 종류만큼 가지를 뻗어 나간다
+
+<img src="/Users/yuri/Library/Application Support/typora-user-images/image-20210312215002686.png" alt="image-20210312215002686" style="zoom:50%;" />
+
+- 동전의 수가 최소이면서 금액 합이 최대인 경우 찾기
+  - 최솟값을 구해야 하므로 정수가 될 수 있는 가장 큰 값으로 `res`을 초기화한다
+  - 동전 값이 가장 큰 것부터 적용해보는 것이 효율적이므로 리스트를 내림차순으로 정렬한다!
+  - DFS
+    - Cut Edge Tech
+      1. `if sum > m: return` : `sum`이 `m`을 초과하면 더 이상 탐색할 필요가 없다
+      2. `if L >= res: return` : 답이 동전의 종류 수를 초과할 수 없다
+
 
 
 ## 순열 구하기
@@ -343,4 +359,12 @@ if __name__ == "__main__":
     DFS(0)
     print(cnt)
 ```
+
+- 중복순열 구하기 문제와 유사
+  - 다만 중복순열과 달리 중복을 허용하지 않으므로 **체크리스트(`ch`)로 개수를 확인**해야 한다
+  - 백트래킹을 할 때 `ch[i]`를 0으로 초기화해야 한다
+
+<img src="/Users/yuri/Library/Application Support/typora-user-images/image-20210312223411575.png" alt="image-20210312223411575" style="zoom:50%;" />
+
+- `ch[i]=1`(진행)과 `ch[i]=0`(되돌아가기) 간 대조되는 것에 주목하기
 
