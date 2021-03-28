@@ -368,3 +368,33 @@ if __name__ == "__main__":
 
 - `ch[i]=1`(진행)과 `ch[i]=0`(되돌아가기) 간 대조되는 것에 주목하기
 
+
+
+## 수열 추측하기
+
+```python
+import sys
+sys.stdin=open("input.txt", "rt")
+def DFS(L, sum):
+    if L==n and sum==f:
+        for x in p:
+            print(x, end=' ')
+        sys.exit(0)
+    else:
+        for i in range(1, n+1):
+            if ch[i]==0:
+                ch[i]=1
+                p[L]=i
+                DFS(L+1, sum+(p[L]*b[L]))
+                ch[i]=0
+
+if __name__ == "__main__":
+    n, f=map(int, input().split())
+    p=[0]*n
+    b=[1]*n
+    ch=[0]*(n+1)
+    for i in range(1, n):
+        b[i]=b[i-1]*(n-i)//i
+    DFS(0, 0)
+```
+
