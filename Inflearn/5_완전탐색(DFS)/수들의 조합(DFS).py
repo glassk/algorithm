@@ -1,3 +1,6 @@
+import itertools as it
+
+
 def DFS(L, s):
     global count
     if L == k:
@@ -30,7 +33,7 @@ def DFS(L, s, sum):
     else:
         for i in range(s, n):
             DFS(L+1, i+1, sum+a[i])
- 
+
 if __name__=="__main__":
     n, k=map(int, input().split())
     a=list(map(int, input().split()))
@@ -39,3 +42,13 @@ if __name__=="__main__":
     DFS(0, 0, 0)
     print(cnt)
 '''
+
+# 라이브러리를 이용한 조합
+n, k = map(int, input().split())
+a = list(map(int, input().split()))
+m = int(input())
+cnt = 0
+for x in it.combinations(a, k):
+    if sum(x) % m == 0:
+        cnt += 1
+print(cnt)
