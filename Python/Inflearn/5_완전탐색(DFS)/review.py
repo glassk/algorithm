@@ -1,5 +1,6 @@
 # 완전탐색(백트래킹, 상태트리와 CUT EDGE) - DFS 기초
 # 재귀함수를 이용한 이진수 출력
+import itertools
 import sys
 
 
@@ -49,7 +50,7 @@ if __name__ == "__main__":
     postorder(1)
 
 
-# 부분집합 구하기
+# 🔥 부분집합 구하기
 def dfs(v):
     if v == n+1:
         for i in range(1, n+1):
@@ -75,12 +76,12 @@ def dfs(l, total):
         return
 
     if l == n:
-        if total == sumA//2:
+        if total == (sumA-total):
             print("YES")
             sys.exit(0)
     else:
         dfs(l+1, total+a[l])
-        dfs(l+1, total-a[l])
+        dfs(l+1, total)
 
 
 if __name__ == "__main__":
@@ -216,26 +217,70 @@ if __name__ == "__main__":
     print(count)
 
 
-# 수열 추측하기
-def dfs(L, sum):
-    if L == n and sum == f:
+# 🔥 수열 추측하기
+def dfs(l, total):
+    if l == n and total == f:
         for x in p:
             print(x, end=' ')
         sys.exit(0)
     else:
         for i in range(1, n+1):
-            if ch[i] == 0:
-                ch[i] = 1
-                p[L] = i
-                dfs(L+1, sum+(p[L]*b[L]))
-                ch[i] = 0
+            if check[i] == 0:
+                check[i] = 1
+                p[l] = i
+                dfs(l+1, total+(p[l]*b[l]))
+                check[i] = 0
 
 
 if __name__ == "__main__":
     n, f = map(int, input().split())
     b = [1]*n
     p = [0]*n
-    ch = [0]*(n+1)
+    check = [0]*(n+1)
     for i in range(1, n):
         b[i] = b[i-1]*(n-i)//i
     dfs(0, 0)
+
+
+# 수열 추측하기(itertools 이용)
+def solution(n, f):
+    b = [1]*n
+    for i in range(1, n):
+        b[i] = b[i-1]*(n-i)/i
+    a = list(range(1, n+1))
+
+    for temp in itertools.permutations(a):
+        total = 0
+        for l, x in enumerate(temp):
+            total += (x*b[l])
+        if total == f:
+            for x in temp:
+                print(x, end=' ')
+            break
+
+
+if __name__ == "__main__":
+    n, f = map(int, input().split())
+    solution(n, f)
+
+
+# 조합 구하기
+def dfs(l, s):
+    global count
+    if l == m:
+        for i in range(m):
+            print(result[i], end=' ')
+        print()
+        count += 1
+    else:
+        for i in range(s, n+1):
+            result[l] = i
+            dfs(l+1, i+1)
+
+
+if __name__ == "__main__":
+    n, m = map(int, input().split())
+    result = [0]*(n+1)
+    count = 0
+    dfs(0, 1)
+    print(count)
