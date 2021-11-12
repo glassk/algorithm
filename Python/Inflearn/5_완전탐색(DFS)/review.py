@@ -284,3 +284,99 @@ if __name__ == "__main__":
     count = 0
     dfs(0, 1)
     print(count)
+
+
+# 🔥 수들의 조합
+def dfs(l, s, total):
+    global answer
+    if l == k:
+        if total % m == 0:
+            answer += 1
+    else:
+        for i in range(s, n):
+            dfs(l+1, i+1, total+a[i])
+
+
+if __name__ == "__main__":
+    n, k = map(int, input().split())
+    a = list(map(int, input().split()))
+    m = int(input())
+    answer = 0
+    dfs(0, 0, 0)
+    print(answer)
+
+
+# 수들의 조합(itertools 이용)
+if __name__ == "__main__":
+    n, k = map(int, input().split())
+    a = list(map(int, input().split()))
+    m = int(input())
+    answer = 0
+
+    for x in itertools.combinations(a, k):
+        if sum(x) % m == 0:
+            answer += 1
+
+    print(answer)
+
+
+# 인접행렬(가중치 방향그래프)
+if __name__ == "__main__":
+    n, m = map(int, input().split())
+    graph = [[0]*n for _ in range(n)]
+    for _ in range(m):
+        start, end, weight = map(int, input().split())
+        graph[start-1][end-1] = weight
+
+    for i in range(n):
+        for j in range(n):
+            print(graph[i][j], end=' ')
+        print()
+
+
+# 인접행렬(무방향 그래프)
+if __name__ == "__main__":
+    n, m = map(int, input().split())
+    graph = [[0]*(n+1) for _ in range(n+1)]
+    for _ in range(m):
+        a, b = map(int, input().split())
+        graph[a][b] = 1
+        graph[b][a] = 1
+
+    for i in range(1, n+1):
+        for j in range(1, n+1):
+            print(graph[i][j], end=' ')
+        print()
+
+
+# 경로 탐색(그래프)
+def dfs(v):
+    global count
+    if v == n:
+        count += 1
+        for x in path:
+            print(x, end=' ')
+        print()
+    else:
+        for i in range(1, n+1):
+            if graph[v][i] == 1 and check[i] == 0:
+                check[i] = 1
+                path.append(i)
+                dfs(i)
+                path.pop()
+                check[i] = 0
+
+
+if __name__ == "__main__":
+    n, m = map(int, input().split())
+    graph = [[0]*(n+1) for _ in range(n+1)]
+    check = [0]*(n+1)
+    for _ in range(m):
+        a, b = map(int, input().split())
+        graph[a][b] = 1
+        graph[b][a]
+    count = 0
+    check[1] = 1
+    path = [1]
+    dfs(1)
+    print(count)
