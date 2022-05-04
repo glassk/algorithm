@@ -1,15 +1,21 @@
 class Keypad {
+  pad = {
+    1: [0, 0],
+    2: [0, 1],
+    3: [0, 2],
+    4: [1, 0],
+    5: [1, 1],
+    6: [1, 2],
+    7: [2, 0],
+    8: [2, 1],
+    9: [2, 2],
+    '*': [3, 0],
+    0: [3, 1],
+    '#': [3, 2],
+  };
+
   position(n) {
-    switch (n) {
-      case '*':
-        return [3, 0];
-      case 0:
-        return [3, 1];
-      case '#':
-        return [3, 2];
-      default:
-        return [Math.floor((n - 1) / 3), (n - 1) % 3];
-    }
+    return this.pad[n];
   }
 
   distance([x1, y1], [x2, y2]) {
@@ -18,16 +24,17 @@ class Keypad {
 }
 
 class Thumbs {
-  constructor(handed) {
+  constructor(handed, keypad) {
     this.left = '*';
     this.right = '#';
     this.handed = handed;
+    this.keypad = keypad;
   }
 
   move(n) {
     if (n === 1 || n === 4 || n === 7) {
       return this.push('left', n);
-    } else if (n === 3 || n === 6 || n === 6) {
+    } else if (n === 3 || n === 6 || n === 9) {
       return this.push('right', n);
     } else {
       return this.select(n);
@@ -44,14 +51,12 @@ class Thumbs {
   }
 
   select(n) {
-    const keypad = new Keypad();
+    const left = this.keypad.position(this.left);
+    const right = this.keypad.position(this.right);
+    const target = this.keypad.position(n);
 
-    const left = keypad.position(this.left);
-    const right = keypad.position(this.right);
-    const target = keypad.position(n);
-
-    const leftDiff = keypad.distance(left, target);
-    const rightDiff = keypad.distance(right, target);
+    const leftDiff = this.keypad.distance(left, target);
+    const rightDiff = this.keypad.distance(right, target);
 
     if (leftDiff < rightDiff) {
       return this.push('left', n);
@@ -65,10 +70,11 @@ class Thumbs {
 
 function solution(numbers, hand) {
   let answer = '';
-  const fingers = new Thumbs(hand);
+  const keypad = new Keypad();
+  const thumbs = new Thumbs(hand, keypad);
 
   for (let num of numbers) {
-    answer += fingers.move(num);
+    answer += thumbs.move(num);
   }
 
   return answer;
