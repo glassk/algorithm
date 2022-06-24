@@ -13,12 +13,19 @@ const solution = (board) => {
   };
 
   let answer = 0;
-  // 가로 방향
+
   for (let i = 0; i < BOARD_LENGTH; i++) {
     let start = 0;
     let end = start + PALINDROME_LENGH;
     for (let j = 0; j <= BOARD_LENGTH - PALINDROME_LENGH; j++) {
+      // 가로 방향
       if (isPalindrome(board[i].slice(start++, end++))) answer++;
+      // 세로 방향
+      const temp = [];
+      for (let k = j; k < j + PALINDROME_LENGH; k++) {
+        temp.push(board[k][i]);
+      }
+      if (isPalindrome(temp)) answer++;
     }
   }
 
