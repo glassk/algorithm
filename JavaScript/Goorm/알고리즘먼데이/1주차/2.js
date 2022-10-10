@@ -1,7 +1,30 @@
 // 2번 동명이인
-function solution(name, others) {
+// Run by Node.js
+const readline = require('readline');
+
+(async () => {
+  let rl = readline.createInterface({ input: process.stdin });
+
+  let count, name;
+  const arr = [];
+  for await (const line of rl) {
+    if (count) {
+      arr.push(line);
+      if (arr.length === count) rl.close();
+    } else {
+      [count, name] = line.split(' ');
+      count = +count;
+    }
+  }
+
+  console.log(solution(name, arr));
+
+  process.exit();
+})();
+
+function solution(name, arr) {
   let answer = 0;
-  others.forEach((v) => {
+  arr.forEach((v) => {
     if (new RegExp(name).test(v)) {
       answer++;
     }

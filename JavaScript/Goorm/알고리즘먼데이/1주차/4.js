@@ -1,4 +1,28 @@
 // 4번 소수 찾기
+// Run by Node.js
+const readline = require('readline');
+
+(async () => {
+  let rl = readline.createInterface({ input: process.stdin });
+
+  let n;
+  for await (const line of rl) {
+    if (n) {
+      rl.close();
+      console.log(
+        solution(
+          n,
+          line.split(' ').map((v) => +v)
+        )
+      );
+    } else {
+      n = +line;
+    }
+  }
+
+  process.exit();
+})();
+
 function solution(n, arr) {
   let answer = 0;
   let num;
