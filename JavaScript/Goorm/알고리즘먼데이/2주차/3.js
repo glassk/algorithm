@@ -1,5 +1,4 @@
 // 3번 출석부
-// Run by Node.js
 const readline = require('readline');
 
 (async () => {

@@ -30,7 +30,6 @@ const readline = require('readline');
 
 function solution(arr) {
   const answer = [];
-  let count = 0;
   arr.forEach((scores) => {
     const len = scores.length;
     const sum = scores.reduce((acc, v) => acc + v, 0);

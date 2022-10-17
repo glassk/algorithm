@@ -31,5 +31,16 @@ function solution(n, str) {
   return answer;
 }
 
-console.log(5, 'goorm'); // 4
-console.log(9, 'algorithm'); // 9
+// 다른 풀이: i번째 철자가 그 다음 철자와 동일하지 않으면 집합 분리
+function solution(n, str) {
+  let answer = 0;
+  for (let i = 0; i < n; i++) {
+    if (str[i + 1] === str[i]) continue;
+    else answer++;
+  }
+
+  return answer;
+}
+
+console.log(solution(5, 'goorm')); // 4
+console.log(solution(9, 'algorithm')); // 9

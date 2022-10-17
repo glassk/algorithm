@@ -1,5 +1,4 @@
 // 4번 폭탄 구현하기
-// Run by Node.js
 const readline = require('readline');
 
 (async () => {
