@@ -1,4 +1,4 @@
-// 3번 구름이의 여행 (일부 케이스 오답)
+// 3번 구름이의 여행
 // Run by Node.js
 const readline = require('readline');
 
@@ -20,40 +20,52 @@ const readline = require('readline');
   process.exit();
 })();
 
-// n 섬의 개수, m 다리의 개수, k 최대 다리 개수, 다리가 잇는 두 섬의 번호 arr (u v)
-// 1번 섬에서 N번 섬으로 가려고 하는데 통과하는 다리 개수가 K개 이하여야 함
-function solution(n, m, k, arr) {
-  let answer = false;
-  const graph = Array.from(Array(n + 1), () => Array());
-  const check = Array.from({ length: n + 1 }, () => 0);
-  arr.forEach(([u, v]) => graph[u].push(v));
-  let count = 0;
+class Queue {
+  constructor() {
+    this.queue = [];
+    this.front = 0;
+    this.rear = 0;
+  }
 
-  function dfs(v) {
-    if (count > k) return;
-    if (v === n) {
-      if (count <= k) {
-        answer = true;
-        return;
-      }
-    } else {
-      const len = graph[v].length;
-      for (let i = 0; i < len; i++) {
-        if (check[graph[v][i]] === 0) {
-          check[graph[v][i]] = 1;
-          count++;
-          dfs(graph[v][i]);
-          check[graph[v][i]] = 0;
-          count--;
-        }
+  enqueue(value) {
+    this.queue[this.rear++] = value;
+  }
+
+  dequeue() {
+    const value = this.queue[this.front];
+    delete this.queue[this.front];
+    this.front++;
+    return value;
+  }
+
+  size() {
+    return this.rear - this.front;
+  }
+}
+
+function solution(n, m, k, arr) {
+  const graph = Array.from(Array(n + 1), () => []);
+  arr.forEach(([u, v]) => {
+    graph[u].push(v);
+    graph[v].push(u);
+  });
+
+  const queue = new Queue();
+  const visited = Array.from({ length: n + 1 }, () => -1);
+  queue.enqueue(1);
+  visited[1] = 0;
+
+  while (queue.size()) {
+    const current = queue.dequeue();
+    for (const next of graph[current]) {
+      if (visited[next] === -1) {
+        queue.enqueue(next);
+        visited[next] = visited[current] + 1;
       }
     }
   }
 
-  check[1] = 1;
-  dfs(1);
-
-  return answer ? 'YES' : 'NO';
+  return visited[n] >= 1 && visited[n] <= k ? 'YES' : 'NO';
 }
 
 console.log(

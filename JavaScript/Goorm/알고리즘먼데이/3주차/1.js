@@ -14,11 +14,13 @@ const readline = require('readline');
       input.push(+line);
     }
   }
+
   console.log(solution(...input));
   process.exit();
 })();
 
-function solution(n, arr) {
+// 점수 총합 이용
+function solution(arr) {
   return arr.reduce((acc, v) => acc + v, 0);
 }
 
