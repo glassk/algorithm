@@ -184,3 +184,131 @@ const timeLimit = function (fn, t) {
   };
 };
 ```
+
+## 2622. Cache With Time Limit
+
+[문제](https://leetcode.com/problems/cache-with-time-limit/description/?envType=study-plan-v2&envId=30-days-of-javascript)
+
+```javascript
+const TimeLimitedCache = function () {
+  this.cache = new Map(); // key: { value, timer }
+};
+
+/**
+ * @param {number} key
+ * @param {number} value
+ * @param {number} duration time until expiration in ms
+ * @return {boolean} if un-expired key already existed
+ */
+TimeLimitedCache.prototype.set = function (key, value, duration) {
+  const generateTimer = (key, duration) =>
+    setTimeout(() => {
+      this.cache.delete(key);
+    }, duration);
+  const hasKey = this.cache.has(key);
+
+  if (hasKey) {
+    clearTimeout(this.cache.get(key).timer);
+  }
+
+  this.cache.set(key, { value, timer: generateTimer(key, duration) });
+
+  return hasKey;
+};
+
+/**
+ * @param {number} key
+ * @return {number} value associated with key
+ */
+TimeLimitedCache.prototype.get = function (key) {
+  return this.cache.has(key) ? this.cache.get(key).value : -1;
+};
+
+/**
+ * @return {number} count of non-expired keys
+ */
+TimeLimitedCache.prototype.count = function () {
+  return this.cache.size;
+};
+
+/**
+ * const timeLimitedCache = new TimeLimitedCache()
+ * timeLimitedCache.set(1, 42, 1000); // false
+ * timeLimitedCache.get(1) // 42
+ * timeLimitedCache.count() // 1
+ */
+```
+
+## 2627. Debounce
+
+[문제](https://leetcode.com/problems/debounce/description/?envType=study-plan-v2&envId=30-days-of-javascript)
+
+```javascript
+/**
+ * @param {Function} fn
+ * @param {number} t milliseconds
+ * @return {Function}
+ */
+const debounce = function (fn, t) {
+  let timeoutId;
+
+  return function (...args) {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      fn(...args);
+    }, t);
+  };
+};
+
+/**
+ * const log = debounce(console.log, 100);
+ * log('Hello'); // cancelled
+ * log('Hello'); // cancelled
+ * log('Hello'); // Logged at t=100ms
+ */
+```
+
+## 2721. Execute Asynchronous Functions in Parallel
+
+[문제](https://leetcode.com/problems/execute-asynchronous-functions-in-parallel/description/?envType=study-plan-v2&envId=30-days-of-javascript)
+
+```javascript
+/**
+ * @param {Array<Function>} functions
+ * @return {Promise<any>}
+ */
+const promiseAll = function(functions) {
+    return new Promise((resolve, reject) => {
+        const results = [];
+        const functionCount = functions.length;
+        let isRejected = false;
+        let resolvedCount = 0;
+
+        functions.forEach((func, index) => {
+            func()
+                .then((result) => {
+                    if (!isRejected) return;
+
+                    results[index] = result;
+                    resolvedCount++;
+                    if (resolvedCount === functionCount) {
+                        resolve(result);
+                    }
+                })
+                .catch((error) => {
+                    if (!isRejected) return;
+
+                    isRejected = true;
+                    reject(error);
+                })
+    })
+};
+
+/**
+ * const promise = promiseAll([() => new Promise(res => res(42))])
+ * promise.then(console.log); // [42]
+ */
+```
