@@ -20,4 +20,26 @@ const solution = (n) => {
   return answer;
 };
 
+// 250417
+function solution(n) {
+  let answer = 1; // n 자기 자신 포함
+
+  function dfs(current, sum) {
+    if (sum > n) {
+      return;
+    } else if (sum === n) {
+      answer++;
+      return;
+    } else {
+      dfs(current + 1, sum + current);
+    }
+  }
+
+  for (let i = 1; i <= Math.floor(n / 2); i++) {
+    dfs(i, 0);
+  }
+
+  return answer;
+}
+
 console.log(solution(15)); // 4

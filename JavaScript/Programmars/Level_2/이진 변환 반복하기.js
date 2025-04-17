@@ -19,6 +19,23 @@ const solution = (s) => {
   return [convertCount, zeroCount];
 };
 
+// 250417
+function solution(s) {
+  let conversionCount = 0;
+  let removedZeroCount = 0;
+  let current = s;
+
+  while (current !== '1') {
+    const removedZero = current.replaceAll('0', '');
+    const c = removedZero.length;
+    removedZeroCount += current.length - c;
+    current = Number(c).toString(2);
+    conversionCount++;
+  }
+
+  return [conversionCount, removedZeroCount];
+}
+
 console.log(solution('110010101001')); // [ 3, 8 ]
 console.log(solution('01110')); // [ 3, 3 ]
 console.log(solution('1111111')); // [ 4, 1 ]

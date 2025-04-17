@@ -14,6 +14,24 @@ const solution = (s) => {
   return stack.length === 0;
 };
 
+// 250417
+function solution(s) {
+  let count = 0;
+  for (const item of s) {
+    if (item === '(') {
+      count++;
+    } else if (item === ')') {
+      if (count > 0) {
+        count--;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  return count === 0;
+}
+
 console.log(solution('()()')); // true
 console.log(solution('(())()')); // true
 console.log(solution(')()(')); // false
