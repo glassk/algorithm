@@ -33,25 +33,6 @@ function solution(maps) {
   return answer === Number.MAX_SAFE_INTEGER ? -1 : answer;
 }
 
-console.log(
-  solution([
-    [1, 0, 1, 1, 1],
-    [1, 0, 1, 0, 1],
-    [1, 0, 1, 1, 1],
-    [1, 1, 1, 0, 1],
-    [0, 0, 0, 0, 1],
-  ])
-); // 11
-console.log(
-  solution([
-    [1, 0, 1, 1, 1],
-    [1, 0, 1, 0, 1],
-    [1, 0, 1, 1, 1],
-    [1, 1, 1, 0, 0],
-    [0, 0, 0, 0, 1],
-  ])
-); // -1
-
 // 효율성까지 통과 (거리 기록 배열 이용, BFS)
 function solution(maps) {
   const rowLen = maps.length;
@@ -86,3 +67,62 @@ function solution(maps) {
 
   return distance[rowLen - 1][colLen - 1] || -1;
 }
+
+// 250418
+function solution(maps) {
+  let answer = Number.MAX_SAFE_INTEGER;
+  const n = maps.length;
+  const m = maps[0].length;
+  const visited = Array.from({ length: n }, () => Array(m).fill(false));
+  const dy = [-1, 0, 1, 0];
+  const dx = [0, 1, 0, -1];
+
+  const queue = [[0, 0, 1]]; // [y, x, 통과한 칸]
+  visited[0][0] = true;
+
+  while (queue.length) {
+    const [y, x, blockCount] = queue.shift();
+
+    if (y === n - 1 && x === m - 1) {
+      answer = Math.min(answer, blockCount);
+      break;
+    }
+
+    for (let i = 0; i < 4; i++) {
+      const tempY = y + dy[i];
+      const tempX = x + dx[i];
+      if (
+        tempY >= 0 &&
+        tempY < n &&
+        tempX >= 0 &&
+        tempX < m &&
+        maps[tempY][tempX] === 1 &&
+        !visited[tempY][tempX]
+      ) {
+        queue.push([tempY, tempX, blockCount + 1]);
+        visited[tempY][tempX] = true;
+      }
+    }
+  }
+
+  return answer === Number.MAX_SAFE_INTEGER ? -1 : answer;
+}
+
+console.log(
+  solution([
+    [1, 0, 1, 1, 1],
+    [1, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1],
+    [1, 1, 1, 0, 1],
+    [0, 0, 0, 0, 1],
+  ])
+); // 11
+console.log(
+  solution([
+    [1, 0, 1, 1, 1],
+    [1, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1],
+    [1, 1, 1, 0, 0],
+    [0, 0, 0, 0, 1],
+  ])
+); // -1
